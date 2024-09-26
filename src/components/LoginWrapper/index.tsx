@@ -1,25 +1,33 @@
-"use client";
+// LoginWrapper.tsx
+"use client"; // If your page component uses client-side features
+
+import { useState } from "react";
 import { useUserContext } from "@/utils/contexts";
 import { Login } from "@/components/Login";
-import { Menu } from "@/components/Menu";
+import { registeredUsers } from "@/utils/users";
 
-export const LoginWrapper = ({ children }: { children: React.ReactNode }) => {
-  const { user } = useUserContext();
+interface LoginWrapperProps {
+  setIsValidUser: (isValid: boolean) => void;
+  setUserInput: (input: string) => void; // New prop for setting userInput
+}
 
-  if (!user) {
-    return (
-      <>
-        <p>We did not find any username with this value. Please try again</p>
-        <Login />
-      </>
-    );
-  }
+export const LoginWrapper = ({
+  setIsValidUser,
+  setUserInput,
+}: LoginWrapperProps) => {
+  const { login } = useUserContext(); // use login from the context
 
-  return (
-    <div>
-      <Menu />
-      <p>Hi {user.name}</p>
-      {children}
-    </div>
-  );
+  const handleLogin = (userInput: string) => {
+    const foundUser = registeredUsers.find((user) => user.name === userInput);
+    if (foundUser) {
+      login(foundUser); // use the login method
+      setIsValidUser(true); // Set valid user state
+    } else {
+      setUserInput(userInput); // Update userInput if user is not found
+      setIsValidUser(false); // Set invalid user state
+      console.log("User not found");
+    }
+  };
+
+  return <Login onLogin={handleLogin} />;
 };
