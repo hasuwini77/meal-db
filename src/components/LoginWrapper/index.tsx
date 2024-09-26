@@ -1,21 +1,19 @@
-// LoginWrapper.tsx
-"use client"; // If your page component uses client-side features
+"use client";
 
-import { useState } from "react";
 import { useUserContext } from "@/utils/contexts";
 import { Login } from "@/components/Login";
 import { registeredUsers } from "@/utils/users";
 
 interface LoginWrapperProps {
   setIsValidUser: (isValid: boolean) => void;
-  setUserInput: (input: string) => void; // New prop for setting userInput
+  setUserInput: (input: string) => void;
 }
 
 export const LoginWrapper = ({
   setIsValidUser,
   setUserInput,
 }: LoginWrapperProps) => {
-  const { login } = useUserContext(); // use login from the context
+  const { login } = useUserContext();
 
   const handleLogin = (userInput: string) => {
     const foundUser = registeredUsers.find((user) => user.name === userInput);

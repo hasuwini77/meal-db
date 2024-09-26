@@ -22,7 +22,7 @@ const Page = () => {
 
   useEffect(() => {
     if (!user) {
-      fetchRandomMeals(); // Fetch random meals if no user is logged in
+      fetchRandomMeals();
     }
   }, [user]);
 
@@ -76,7 +76,7 @@ const Page = () => {
           ) : (
             <p>Please try again.</p>
           )}
-          <RandomMeals meals={randomMeals} /> {/* Show random meals */}
+          <RandomMeals meals={randomMeals} />
         </div>
       ) : (
         <div>

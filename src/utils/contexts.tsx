@@ -14,7 +14,6 @@ export const useUserContext = () => {
   return context;
 };
 
-// UserProvider component that will wrap your app
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserType | null>(null);
 

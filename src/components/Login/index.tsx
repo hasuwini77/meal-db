@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 interface LoginProps {
-  onLogin: (userInput: string) => void; // Change this prop
+  onLogin: (userInput: string) => void;
 }
 
 export const Login = ({ onLogin }: LoginProps) => {
