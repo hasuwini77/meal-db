@@ -10,15 +10,16 @@ import { registeredUsers } from "@/utils/users";
 const Page = () => {
   const { user, login } = useUserContext();
   const [isValidUser, setIsValidUser] = useState<boolean>(false);
+  const [hasTriedLogin, setHasTriedLogin] = useState<boolean>(false);
   const [userInput, setUserInput] = useState<string>("");
   const [userMeals, setUserMeals] = useState<any[]>([]);
   const [randomMeals, setRandomMeals] = useState<any[]>([]);
 
   useEffect(() => {
     if (isValidUser) {
-      fetchUserMeals(userInput); // Fetch meals based on the user input
+      fetchUserMeals(userInput);
     }
-  }, [isValidUser, userInput]); // Include userInput in dependency array
+  }, [isValidUser, userInput]);
 
   useEffect(() => {
     if (!user) {
@@ -27,7 +28,9 @@ const Page = () => {
   }, [user]);
 
   const fetchUserMeals = async (userName: string) => {
-    const foundUser = registeredUsers.find((user) => user.name === userName);
+    const foundUser = registeredUsers.find(
+      (user) => user.name.toLowerCase() === userName.toLowerCase()
+    );
     if (foundUser) {
       login(foundUser);
       try {
@@ -47,7 +50,7 @@ const Page = () => {
   const fetchRandomMeals = async () => {
     try {
       const mealPromises = [];
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 6; i++) {
         mealPromises.push(
           fetch(`https://www.themealdb.com/api/json/v1/1/random.php`).then(
             (res) => res.json()
@@ -62,41 +65,59 @@ const Page = () => {
     }
   };
 
+  // Handle login attempt
+  const handleLoginAttempt = () => {
+    setHasTriedLogin(true);
+    const foundUser = registeredUsers.find(
+      (u) => u.name.toLowerCase() === userInput.toLowerCase()
+    );
+    if (foundUser) {
+      setIsValidUser(true);
+    } else {
+      setIsValidUser(false);
+    }
+  };
+
   return (
-    <div>
+    <div className="max-w-5xl mx-auto p-6">
       {!user ? (
-        <div>
-          <p>Welcome to you, visitor! Please fill in the login form below:</p>
+        <div className="text-center">
+          <p className="text-lg mb-4">
+            Welcome, visitor! Please fill in the login form below:
+          </p>
           <LoginWrapper
-            setIsValidUser={setIsValidUser}
             setUserInput={setUserInput}
+            handleLoginAttempt={handleLoginAttempt}
+            setIsValidUser={setIsValidUser}
           />
-          {isValidUser ? (
-            <p>Login successful! Loading your meals...</p>
-          ) : (
-            <p>Please try again.</p>
+
+          {hasTriedLogin && !isValidUser && (
+            <p className="text-red-500 mt-4">Please try again.</p>
           )}
           <RandomMeals meals={randomMeals} />
         </div>
       ) : (
         <div>
           <Menu />
-          <p>Hi {user.name}</p>
+          <p className="text-xl font-semibold mt-6">Hi {user.name}</p>
           {userMeals.length > 0 ? (
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6">
               {userMeals.map((meal) => (
-                <div key={meal.idMeal} className="card">
+                <div
+                  key={meal.idMeal}
+                  className="bg-white rounded-lg shadow-lg p-4"
+                >
                   <img
                     src={meal.strMealThumb}
                     alt={meal.strMeal}
-                    className="w-full h-auto rounded-lg"
+                    className="w-full h-48 object-cover rounded-md"
                   />
                   <h3 className="text-lg font-semibold mt-2">{meal.strMeal}</h3>
                 </div>
               ))}
             </div>
           ) : (
-            <p>No meals found for your category.</p>
+            <p className="mt-4">No meals found for your category.</p>
           )}
         </div>
       )}
