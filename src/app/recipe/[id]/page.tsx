@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/utils/contexts";
 import { RecipeType } from "@/utils/types";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 type RecipePageProps = {
   params: {
@@ -33,17 +34,35 @@ const RecipePage = ({ params }: RecipePageProps) => {
     }
   }, [id]);
 
-  const handleSaveRecipe = () => {
+  const handleSaveRecipe = async () => {
     if (user && meal) {
       const recipeId = meal.idMeal;
-      if (recipeId && !user.savedRecipes.includes(recipeId)) {
-        // Prevent duplicate saves
-        setUser({
-          ...user,
-          savedRecipes: [...user.savedRecipes, recipeId],
-        });
+      if (recipeId) {
+        if (!user.savedRecipes.includes(recipeId)) {
+          // Prevent duplicate saves
+          setUser({
+            ...user,
+            savedRecipes: [...user.savedRecipes, recipeId],
+          });
+
+          // Show success alert
+          await Swal.fire({
+            title: "Success!",
+            text: "Recipe successfully saved!",
+            icon: "success",
+            confirmButtonText: "OK",
+          });
+        } else {
+          // Show error alert
+          await Swal.fire({
+            title: "Error!",
+            text: "This recipe has already been saved.",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+        }
       } else {
-        console.log("Recipe already saved or invalid ID!");
+        console.log("Invalid recipe ID!");
       }
     }
   };
