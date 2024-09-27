@@ -19,15 +19,21 @@ export const Login = ({ onLogin }: LoginProps) => {
   };
 
   return (
-    <div>
-      <label htmlFor="user-input">Enter User Name</label>
+    <div className="flex flex-col">
+      <label htmlFor="user-input">Enter Username</label>
       <input
         type="text"
         id="user-input"
         value={userInput}
         onChange={handleChange}
+        className="max-w-[200px] mx-auto"
       />
-      <button onClick={handleClick}>Login</button>
+      <button
+        onClick={handleClick}
+        className="bg-orange-400 hover:bg-orange-500 text-white font-semibold py-2 min-w-[150px] mt-4 mx-auto rounded-lg shadow-md transition duration-200"
+      >
+        Login
+      </button>
     </div>
   );
 };

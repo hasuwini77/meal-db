@@ -47,15 +47,40 @@ const RecipePage = ({ params }: RecipePageProps) => {
     }
   };
 
+  const handleGoBack = () => {
+    window.location.href = "/";
+  };
+
   if (!meal) return <p>Loading...</p>;
 
   return (
-    <div>
-      <h1>{meal.strMeal}</h1>
-      <img src={meal.strMealThumb} alt={meal.strMeal} />
-      <p>{meal.strInstructions}</p>
-      <button onClick={handleSaveRecipe}>Save Recipe</button>
-    </div>
+    <>
+      <div className="max-w-sm mx-auto bg-white rounded-lg shadow-md mt-6 overflow-hidden p-6 space-y-4">
+        <h1 className="text-2xl font-bold text-gray-800">{meal.strMeal}</h1>
+        <img
+          src={meal.strMealThumb}
+          alt={meal.strMeal}
+          className="w-full h-48 object-cover rounded-md"
+        />
+        <p className="text-gray-600 text-sm leading-relaxed">
+          {meal.strInstructions}
+        </p>
+        <button
+          onClick={handleSaveRecipe}
+          className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 rounded-md shadow-md transition duration-200"
+        >
+          Save Recipe
+        </button>
+      </div>
+      <div className="max-w-sm mx-auto mt-4">
+        <button
+          onClick={handleGoBack}
+          className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-md shadow-md transition duration-200"
+        >
+          Go Back
+        </button>
+      </div>
+    </>
   );
 };
 

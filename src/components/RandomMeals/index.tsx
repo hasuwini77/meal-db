@@ -24,7 +24,7 @@ export const RandomMeals = ({ meals }: RandomMealsProps) => {
             transition={{ duration: 0.5 }}
             className="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer transform transition duration-300 ease-in-out"
           >
-            <Link href={`/item/${meal.idMeal}`} className="block">
+            <Link href={`/recipe/${meal.idMeal}`} className="block">
               <img
                 src={meal.strMealThumb}
                 alt={meal.strMeal}
