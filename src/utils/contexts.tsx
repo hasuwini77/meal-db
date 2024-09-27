@@ -18,7 +18,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserType | null>(null);
 
   const login = (userData: UserType) => setUser(userData);
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);
+    window.location.href = "/";
+  };
 
   return (
     <UserContext.Provider value={{ user, setUser, login, logout }}>
