@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-
+import Image from "next/image";
 interface RandomMealsProps {
   meals: any[];
 }
@@ -25,11 +25,18 @@ export const RandomMeals = ({ meals }: RandomMealsProps) => {
             className="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer transform transition duration-300 ease-in-out"
           >
             <Link href={`/recipe/${meal.idMeal}`} className="block">
-              <img
-                src={meal.strMealThumb}
-                alt={meal.strMeal}
-                className="w-full h-48 object-cover"
-              />
+              <div className="w-full h-48 relative">
+                <Image
+                  src={meal.strMealThumb}
+                  alt={meal.strMeal}
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-t-lg"
+                  placeholder="blur"
+                  blurDataURL={meal.strMealThumb}
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                />
+              </div>
               <h3 className="text-lg font-semibold text-gray-700 p-4">
                 {meal.strMeal}
               </h3>

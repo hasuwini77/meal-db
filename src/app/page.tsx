@@ -6,6 +6,7 @@ import { LoginWrapper } from "@/components/LoginWrapper";
 import { Menu } from "@/components/Menu";
 import { RandomMeals } from "@/components/RandomMeals";
 import { registeredUsers } from "@/utils/users";
+import Image from "next/image";
 
 const Page = () => {
   const { user, login } = useUserContext();
@@ -58,7 +59,9 @@ const Page = () => {
         );
       }
       const mealsData = await Promise.all(mealPromises);
-      const meals = mealsData.map((mealData) => mealData.meals[0]);
+      const meals = mealsData
+        .map((mealData) => mealData.meals[0])
+        .filter((meal) => meal && meal.strMealThumb); // Ensures only meals with thumbnails are included
       setRandomMeals(meals);
     } catch (error) {
       console.error("Error fetching random meals:", error);
@@ -92,7 +95,9 @@ const Page = () => {
           />
 
           {hasTriedLogin && !isValidUser && (
-            <p className="text-red-500 mt-4">Please try again.</p>
+            <p className="text-red-500 mt-4">
+              Wrong Username. Please try again.
+            </p>
           )}
           <RandomMeals meals={randomMeals} />
         </div>
@@ -107,11 +112,16 @@ const Page = () => {
                   key={meal.idMeal}
                   className="bg-white rounded-lg shadow-lg p-4"
                 >
-                  <img
+                  <Image
                     src={meal.strMealThumb}
                     alt={meal.strMeal}
+                    width={500} // Set an appropriate width
+                    height={300} // Set an appropriate height
                     className="w-full h-48 object-cover rounded-md"
+                    placeholder="blur" // Optional: show a blurred placeholder
+                    blurDataURL={meal.strMealThumb} // Optional: add a small, low-quality image as a placeholder
                   />
+
                   <h3 className="text-lg font-semibold mt-2">{meal.strMeal}</h3>
                 </div>
               ))}
