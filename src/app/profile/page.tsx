@@ -6,8 +6,8 @@ import Link from "next/link";
 import Swal from "sweetalert2";
 
 const Profile = () => {
-  const { user, setUser, logout } = useUserContext(); // Added setUser for updating user context
-  const [savedMeals, setSavedMeals] = useState<any[]>([]); // State to hold the fetched meal data
+  const { user, setUser, logout } = useUserContext();
+  const [savedMeals, setSavedMeals] = useState<any[]>([]);
 
   const handleGoBack = () => {
     window.history.back();
@@ -21,11 +21,11 @@ const Profile = () => {
             `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`
           );
           const data = await response.json();
-          return data.meals[0]; // Assuming the API returns an array and we want the first meal
+          return data.meals[0];
         });
 
         const mealsData = await Promise.all(mealPromises);
-        setSavedMeals(mealsData.filter((meal) => meal)); // Filter out any undefined results
+        setSavedMeals(mealsData.filter((meal) => meal));
       }
     };
 
