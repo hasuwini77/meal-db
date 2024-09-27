@@ -1,10 +1,35 @@
 "use client";
-import { useUserContext } from "@/utils/contexts"; // Ensure you import the context
+import { useEffect, useState } from "react";
+import { useUserContext } from "@/utils/contexts";
 import { RandomMeals } from "@/components/RandomMeals";
 import Link from "next/link";
 
 const Profile = () => {
-  const { user, logout } = useUserContext(); // Get user and logout function from context
+  const { user, logout } = useUserContext();
+  const [savedMeals, setSavedMeals] = useState<any[]>([]);
+
+  const handleGoBack = () => {
+    window.history.back();
+  };
+
+  useEffect(() => {
+    const fetchSavedMeals = async () => {
+      if (user && user.savedRecipes.length > 0) {
+        const mealPromises = user.savedRecipes.map(async (recipeId) => {
+          const response = await fetch(
+            `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`
+          );
+          const data = await response.json();
+          return data.meals[0]; // Assuming the API returns an array and we want the first meal
+        });
+
+        const mealsData = await Promise.all(mealPromises);
+        setSavedMeals(mealsData.filter((meal) => meal)); // Filter out any undefined results
+      }
+    };
+
+    fetchSavedMeals();
+  }, [user]);
 
   if (!user) return <p>Please log in to see your profile.</p>;
 
@@ -21,21 +46,26 @@ const Profile = () => {
         ) : (
           user.savedRecipes.map((recipeId) => (
             <li key={recipeId}>
-              <Link href={`/item/${recipeId}`}>Recipe {recipeId}</Link>
+              <Link href={`/recipe/${recipeId}`}>Recipe {recipeId}</Link>
             </li>
           ))
         )}
       </ul>
 
-      <RandomMeals meals={user.savedRecipes} />
+      <RandomMeals meals={savedMeals} />
 
-      <div className="mt-4">
-        {/* Logout button */}
+      <div className="mt-4 flex space-x-4">
         <button
           onClick={logout}
           className="bg-red-500 text-white py-2 px-4 rounded"
         >
           Logout
+        </button>
+        <button
+          onClick={handleGoBack}
+          className="bg-orange-500 text-white py-2 px-4 rounded"
+        >
+          Go Back
         </button>
       </div>
     </div>

@@ -5,13 +5,13 @@ import { RecipeType } from "@/utils/types";
 
 type RecipePageProps = {
   params: {
-    id: string; // The dynamic route parameter passed to the component
+    id: string;
   };
 };
 
 const RecipePage = ({ params }: RecipePageProps) => {
   const { id } = params;
-  const [meal, setMeal] = useState<RecipeType | null>(null); // Use RecipeType or a more detailed type
+  const [meal, setMeal] = useState<RecipeType | null>(null);
   const { user, setUser } = useUserContext();
 
   useEffect(() => {
@@ -35,14 +35,15 @@ const RecipePage = ({ params }: RecipePageProps) => {
 
   const handleSaveRecipe = () => {
     if (user && meal) {
-      if (!user.savedRecipes.includes(meal.idMeal)) {
+      const recipeId = meal.idMeal;
+      if (recipeId && !user.savedRecipes.includes(recipeId)) {
         // Prevent duplicate saves
         setUser({
           ...user,
-          savedRecipes: [...user.savedRecipes, meal.idMeal],
+          savedRecipes: [...user.savedRecipes, recipeId],
         });
       } else {
-        console.log("Recipe already saved!");
+        console.log("Recipe already saved or invalid ID!");
       }
     }
   };
