@@ -2,7 +2,7 @@ import { useUserContext } from "@/utils/contexts";
 import Link from "next/link";
 
 export const Menu = () => {
-  const { logout } = useUserContext();
+  const { logout, favoriteCategory, setFavoriteCategory } = useUserContext(); // Access favoriteCategory from context
 
   return (
     <nav className="bg-gray-800 p-4 rounded shadow-md">
@@ -37,6 +37,11 @@ export const Menu = () => {
           </button>
         </li>
       </ul>
+      {favoriteCategory && ( // Conditionally display the favorite category
+        <div className="mt-2 text-white">
+          Favorite Category: <strong>{favoriteCategory}</strong>
+        </div>
+      )}
     </nav>
   );
 };

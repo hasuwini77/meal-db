@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useUserContext } from "@/utils/contexts"; // Adjust the import path as needed
+import { useUserContext } from "@/utils/contexts";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import { Menu } from "@/components/Menu";
@@ -88,11 +88,8 @@ const Category = () => {
           </h2>
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {meals.map((meal) => (
-              <Link href={`/recipe/${meal.idMeal}`}>
-                <li
-                  key={meal.idMeal}
-                  className="bg-white text-gray-800 rounded-lg shadow-md p-4"
-                >
+              <Link href={`/recipe/${meal.idMeal}`} key={meal.idMeal}>
+                <li className="bg-white text-gray-800 rounded-lg shadow-md p-4">
                   {meal.strMeal}
                 </li>
               </Link>

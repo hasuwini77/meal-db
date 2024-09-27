@@ -1,11 +1,11 @@
 "use client";
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import { UserType, UserContextType } from "./types";
 
-// Create the context
+// Create the UserContext
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// Provide a hook to use the context
+// Hook to use UserContext
 export const useUserContext = () => {
   const context = useContext(UserContext);
   if (!context) {
@@ -14,26 +14,21 @@ export const useUserContext = () => {
   return context;
 };
 
+// UserProvider component
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserType | null>(null);
-  const [favoriteCategory, setFavoriteCategory] = useState<string | null>(null); // Start with null
+  const [favoriteCategory, setFavoriteCategory] = useState<string | null>(null);
 
-  // Update favoriteCategory when user changes
-  useEffect(() => {
-    if (user) {
-      setFavoriteCategory(user.category); // Set to user's category when user logs in
-    }
-  }, [user]);
-
+  // Login function to set user and favorite category
   const login = (userData: UserType) => {
     setUser(userData);
-    setFavoriteCategory(userData.category); // Set favorite category on login
+    setFavoriteCategory(userData.favoriteCategory || null);
   };
 
+  // Logout function to clear user and favorite category
   const logout = () => {
     setUser(null);
-    setFavoriteCategory(null); // Clear favorite category on logout
-    window.location.href = "/";
+    setFavoriteCategory(null);
   };
 
   return (

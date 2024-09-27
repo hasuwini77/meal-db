@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/utils/contexts";
-import { RecipeType } from "@/utils/types";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import { RecipeType, UserType } from "@/utils/types"; // Ensure UserType is imported
+import Swal from "sweetalert2";
+import { Menu } from "@/components/Menu";
 
 type RecipePageProps = {
   params: {
@@ -13,7 +14,8 @@ type RecipePageProps = {
 const RecipePage = ({ params }: RecipePageProps) => {
   const { id } = params;
   const [meal, setMeal] = useState<RecipeType | null>(null);
-  const { user, setUser } = useUserContext();
+  const { user, setUser, favoriteCategory, setFavoriteCategory } =
+    useUserContext();
 
   useEffect(() => {
     if (id) {
@@ -37,12 +39,21 @@ const RecipePage = ({ params }: RecipePageProps) => {
   const handleSaveRecipe = async () => {
     if (user && meal) {
       const recipeId = meal.idMeal;
+
       if (recipeId) {
         if (!user.savedRecipes.includes(recipeId)) {
           // Prevent duplicate saves
-          setUser({
-            ...user,
-            savedRecipes: [...user.savedRecipes, recipeId],
+          setUser((prevUser) => {
+            // Ensure prevUser is not null
+            if (prevUser) {
+              return {
+                ...prevUser, // Spread previous user properties
+                savedRecipes: [...prevUser.savedRecipes, recipeId], // Add new recipe ID
+                // Keep favoriteCategory the same
+                favoriteCategory: prevUser.favoriteCategory, // Ensure favoriteCategory persists
+              };
+            }
+            return user; // In case prevUser is null, return the current user (this shouldn't happen)
           });
 
           // Show success alert
@@ -68,17 +79,14 @@ const RecipePage = ({ params }: RecipePageProps) => {
   };
 
   const handleGoBack = () => {
-    if (user) {
-      window.history.back();
-    } else {
-      window.location.href = "/";
-    }
+    window.location.href = "/";
   };
 
   if (!meal) return <p>Loading...</p>;
 
   return (
     <>
+      {user && <Menu />}
       <div className="max-w-sm mx-auto bg-white rounded-lg shadow-md mt-6 overflow-hidden p-6 space-y-4">
         <h1 className="text-2xl font-bold text-gray-800">{meal.strMeal}</h1>
         <img
@@ -96,14 +104,17 @@ const RecipePage = ({ params }: RecipePageProps) => {
           Save Recipe
         </button>
       </div>
-      <div className="max-w-sm mx-auto mt-4">
-        <button
-          onClick={handleGoBack}
-          className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-md shadow-md transition duration-200"
-        >
-          Go Back
-        </button>
-      </div>
+
+      {!user && (
+        <div className="max-w-sm mx-auto mt-4">
+          <button
+            onClick={handleGoBack}
+            className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-md shadow-md transition duration-200"
+          >
+            Go Back
+          </button>
+        </div>
+      )}
     </>
   );
 };

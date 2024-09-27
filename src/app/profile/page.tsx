@@ -4,14 +4,22 @@ import { useUserContext } from "@/utils/contexts";
 import { RandomMeals } from "@/components/RandomMeals";
 import Link from "next/link";
 import Swal from "sweetalert2";
+import { Menu } from "@/components/Menu";
 
 const Profile = () => {
-  const { user, setUser, logout } = useUserContext();
+  const { user, setUser, logout, favoriteCategory, setFavoriteCategory } =
+    useUserContext();
   const [savedMeals, setSavedMeals] = useState<any[]>([]);
 
   const handleGoBack = () => {
     window.history.back();
   };
+
+  useEffect(() => {
+    if (user && favoriteCategory) {
+      setFavoriteCategory(favoriteCategory);
+    }
+  }, [user, favoriteCategory, setFavoriteCategory]);
 
   useEffect(() => {
     const fetchSavedMeals = async () => {
@@ -34,7 +42,6 @@ const Profile = () => {
 
   const handleRemoveRecipe = async (recipeId: string) => {
     if (user) {
-      // Confirm the removal
       const result = await Swal.fire({
         title: "Are you sure?",
         text: "This recipe will be removed from your favorites.",
@@ -53,7 +60,6 @@ const Profile = () => {
           savedRecipes: updatedSavedRecipes,
         });
 
-        // Show success alert
         await Swal.fire({
           title: "Removed!",
           text: "Recipe has been removed from favorites.",
@@ -61,7 +67,6 @@ const Profile = () => {
           confirmButtonText: "OK",
         });
 
-        // Optionally, refresh the saved meals
         setSavedMeals((prevMeals) =>
           prevMeals.filter((meal) => meal.idMeal !== recipeId)
         );
@@ -73,30 +78,35 @@ const Profile = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-6">
+      <Menu />
       <h1 className="text-2xl font-bold">Profile Page</h1>
       <p>Name: {user.name}</p>
-      <p>Favorite Category: {user.category}</p>
-
+      <p>Favorite Category: {favoriteCategory ? favoriteCategory : "None"}</p>
       <h2>Saved Recipes</h2>
-      <ul>
-        {user.savedRecipes.length === 0 ? (
-          <p>No saved recipes</p>
-        ) : (
-          user.savedRecipes.map((recipeId) => (
-            <li key={recipeId}>
-              <Link href={`/recipe/${recipeId}`}>Recipe {recipeId}</Link>
+      {user.savedRecipes.length === 0 ? (
+        <p>No saved recipes</p>
+      ) : (
+        <ul>
+          {savedMeals.map((meal) => (
+            <li key={meal.idMeal} className="flex justify-between items-center">
+              <Link href={`/recipe/${meal.idMeal}`}>
+                <span>{meal.strMeal}</span>
+              </Link>
+              <button
+                onClick={() => handleRemoveRecipe(meal.idMeal)}
+                className="text-red-500 hover:text-red-700"
+              >
+                Remove
+              </button>
             </li>
-          ))
-        )}
-      </ul>
-
-      {/* Pass the fetched meals and the remove function to RandomMeals */}
+          ))}
+        </ul>
+      )}
       <RandomMeals
         meals={savedMeals}
         onRemove={handleRemoveRecipe}
         isLoggedIn={true}
       />
-
       <div className="mt-4 flex space-x-4">
         <button
           onClick={logout}

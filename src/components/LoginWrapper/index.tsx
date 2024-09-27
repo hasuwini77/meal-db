@@ -15,7 +15,7 @@ export const LoginWrapper = ({
   setUserInput,
   handleLoginAttempt,
 }: LoginWrapperProps) => {
-  const { login } = useUserContext();
+  const { login, favoriteCategory, setFavoriteCategory } = useUserContext();
 
   const handleLogin = (userInput: string) => {
     setUserInput(userInput);
@@ -24,10 +24,16 @@ export const LoginWrapper = ({
       (user) => user.name.toLowerCase() === userInput.toLowerCase()
     );
     if (foundUser) {
-      login(foundUser); // Use the login method to set the user in context
-      setIsValidUser(true); // Set valid user state
+      // Assume foundUser has favoriteCategory
+      const userToLogin = {
+        name: foundUser.name,
+        savedRecipes: foundUser.savedRecipes || [],
+        favoriteCategory: foundUser.favoriteCategory || null,
+      };
+      login(userToLogin);
+      setIsValidUser(true);
     } else {
-      setIsValidUser(false); // Set invalid user state
+      setIsValidUser(false);
       console.log("User not found");
     }
 

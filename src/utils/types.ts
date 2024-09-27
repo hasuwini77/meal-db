@@ -1,18 +1,21 @@
-export type UserType = { 
-    name: string;
-    category: string; 
-    savedRecipes: string[];
-  };
+import { Dispatch, SetStateAction } from "react";
+
+export interface UserType {
+  name: string;
+  savedRecipes: string[];
+  favoriteCategory: string | null;
+}
+
+export interface UserContextType {
+  user: UserType | null;
+  setUser: Dispatch<SetStateAction<UserType | null>>;
+  login: (userData: UserType) => void;
+  logout: () => void;
+  favoriteCategory: string | null; // Add this line
+  setFavoriteCategory: Dispatch<SetStateAction<string | null>>; // Add this line
+}
   
-  export type UserContextType = { 
-    user: UserType | null;
-    setUser: (user: UserType | null) => void;
-    login: (userData: UserType) => void;
-    logout: () => void;
-    favoriteCategory: string | null; 
-    setFavoriteCategory: (category: string | null) => void; 
-  };
-  
+  // Updated RecipeType
   export type RecipeType = {
     idMeal: string;
     strMeal: string;
@@ -22,13 +25,14 @@ export type UserType = {
     strInstructions?: string;
     strYoutube?: string;
     strIngredient1?: string;
-    // Add other fields as needed
+
   };
   
+
   export type CategoryType = {
     idCategory: string;
     strCategory: string;
     strCategoryThumb: string;
     strCategoryDescription: string;
-  }; 
+  };
   

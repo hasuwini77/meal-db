@@ -8,10 +8,11 @@ import { RandomMeals } from "@/components/RandomMeals";
 import { registeredUsers } from "@/utils/users";
 import Image from "next/image";
 import Link from "next/link";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import Swal from "sweetalert2";
 
 const Page = () => {
-  const { user, login, setUser } = useUserContext(); // Include setUser
+  const { user, login, setUser, favoriteCategory, setFavoriteCategory } =
+    useUserContext();
   const [isValidUser, setIsValidUser] = useState<boolean>(false);
   const [hasTriedLogin, setHasTriedLogin] = useState<boolean>(false);
   const [userInput, setUserInput] = useState<string>("");
@@ -26,8 +27,8 @@ const Page = () => {
 
   useEffect(() => {
     // Fetch user meals if user is logged in
-    if (user) {
-      fetchUserMeals(user.category);
+    if (user && user.favoriteCategory) {
+      fetchUserMeals(user.favoriteCategory); // Update to use favoriteCategory
     }
   }, [user]);
 
@@ -80,7 +81,7 @@ const Page = () => {
     if (foundUser) {
       login(foundUser);
       setIsValidUser(true);
-      fetchUserMeals(foundUser.category); // Fetch user meals after login
+      fetchUserMeals(foundUser.favoriteCategory || ""); // Provide a fallback value here
     } else {
       setIsValidUser(false);
     }
@@ -188,7 +189,8 @@ const Page = () => {
                     </div>
                   ) : (
                     <p className="mt-4">
-                      No meals found for the category "{user.category}".
+                      No meals found for the category "
+                      {user.favoriteCategory || "N/A"}".
                     </p>
                   )}
                 </>
