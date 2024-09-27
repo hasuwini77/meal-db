@@ -15,6 +15,11 @@ const Profile = () => {
     window.history.back();
   };
 
+  const handleLogout = () => {
+    logout();
+    window.location.href = "/";
+  };
+
   useEffect(() => {
     if (user && favoriteCategory) {
       setFavoriteCategory(favoriteCategory);
@@ -109,7 +114,7 @@ const Profile = () => {
       />
       <div className="mt-4 flex space-x-4">
         <button
-          onClick={logout}
+          onClick={handleLogout}
           className="bg-red-500 text-white py-2 px-4 rounded"
         >
           Logout
