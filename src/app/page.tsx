@@ -26,9 +26,8 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch user meals if user is logged in
-    if (user && user.favoriteCategory) {
-      fetchUserMeals(user.favoriteCategory); // Update to use favoriteCategory
+    if (user && favoriteCategory) {
+      fetchUserMeals(favoriteCategory);
     }
   }, [user]);
 
