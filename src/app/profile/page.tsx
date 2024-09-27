@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { useUserContext } from "@/utils/contexts";
 import { RandomMeals } from "@/components/RandomMeals";
 import Link from "next/link";
+import Swal from "sweetalert2";
 
 const Profile = () => {
-  const { user, logout } = useUserContext();
-  const [savedMeals, setSavedMeals] = useState<any[]>([]);
+  const { user, setUser, logout } = useUserContext(); // Added setUser for updating user context
+  const [savedMeals, setSavedMeals] = useState<any[]>([]); // State to hold the fetched meal data
 
   const handleGoBack = () => {
     window.history.back();
@@ -31,6 +32,43 @@ const Profile = () => {
     fetchSavedMeals();
   }, [user]);
 
+  const handleRemoveRecipe = async (recipeId: string) => {
+    if (user) {
+      // Confirm the removal
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "This recipe will be removed from your favorites.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, remove it!",
+        cancelButtonText: "Cancel",
+      });
+
+      if (result.isConfirmed) {
+        const updatedSavedRecipes = user.savedRecipes.filter(
+          (id) => id !== recipeId
+        );
+        setUser({
+          ...user,
+          savedRecipes: updatedSavedRecipes,
+        });
+
+        // Show success alert
+        await Swal.fire({
+          title: "Removed!",
+          text: "Recipe has been removed from favorites.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+
+        // Optionally, refresh the saved meals
+        setSavedMeals((prevMeals) =>
+          prevMeals.filter((meal) => meal.idMeal !== recipeId)
+        );
+      }
+    }
+  };
+
   if (!user) return <p>Please log in to see your profile.</p>;
 
   return (
@@ -52,7 +90,12 @@ const Profile = () => {
         )}
       </ul>
 
-      <RandomMeals meals={savedMeals} />
+      {/* Pass the fetched meals and the remove function to RandomMeals */}
+      <RandomMeals
+        meals={savedMeals}
+        onRemove={handleRemoveRecipe}
+        isLoggedIn={true}
+      />
 
       <div className="mt-4 flex space-x-4">
         <button

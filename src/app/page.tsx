@@ -8,9 +8,10 @@ import { RandomMeals } from "@/components/RandomMeals";
 import { registeredUsers } from "@/utils/users";
 import Image from "next/image";
 import Link from "next/link";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const Page = () => {
-  const { user, login } = useUserContext();
+  const { user, login, setUser } = useUserContext(); // Include setUser
   const [isValidUser, setIsValidUser] = useState<boolean>(false);
   const [hasTriedLogin, setHasTriedLogin] = useState<boolean>(false);
   const [userInput, setUserInput] = useState<string>("");
@@ -31,7 +32,6 @@ const Page = () => {
   }, [user]);
 
   const fetchUserMeals = async (category: string) => {
-    console.log(`Fetching meals for category: ${category}`);
     setIsLoading(true);
     setFetchError(null);
     try {
@@ -39,7 +39,6 @@ const Page = () => {
         `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`
       );
       const data = await response.json();
-      console.log("API Response:", data);
       if (data.meals && data.meals.length > 0) {
         setUserMeals(data.meals.slice(0, 3));
       } else {
@@ -87,6 +86,44 @@ const Page = () => {
     }
   };
 
+  const handleRemoveRecipe = async (recipeId: string) => {
+    if (user) {
+      // Confirm the removal
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "This recipe will be removed from your favorites.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, remove it!",
+        cancelButtonText: "Cancel",
+      });
+
+      if (result.isConfirmed) {
+        // Update the user context
+        const updatedSavedRecipes = user.savedRecipes.filter(
+          (id) => id !== recipeId
+        );
+        setUser({
+          ...user,
+          savedRecipes: updatedSavedRecipes,
+        });
+
+        // Show success alert
+        await Swal.fire({
+          title: "Removed!",
+          text: "Recipe has been removed from favorites.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+
+        // Optionally, refresh the random meals
+        setRandomMeals((prevMeals) =>
+          prevMeals.filter((meal) => meal.idMeal !== recipeId)
+        );
+      }
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto p-6">
       {!user ? (
@@ -105,7 +142,11 @@ const Page = () => {
               Wrong Username. Please try again.
             </p>
           )}
-          <RandomMeals meals={randomMeals} />
+          <RandomMeals
+            meals={randomMeals}
+            onRemove={handleRemoveRecipe}
+            isLoggedIn={!!user}
+          />
         </div>
       ) : (
         <div>
