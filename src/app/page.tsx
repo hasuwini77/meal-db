@@ -7,6 +7,7 @@ import { Menu } from "@/components/Menu";
 import { RandomMeals } from "@/components/RandomMeals";
 import { registeredUsers } from "@/utils/users";
 import Image from "next/image";
+import Link from "next/link";
 
 const Page = () => {
   const { user, login } = useUserContext();
@@ -15,36 +16,40 @@ const Page = () => {
   const [userInput, setUserInput] = useState<string>("");
   const [userMeals, setUserMeals] = useState<any[]>([]);
   const [randomMeals, setRandomMeals] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isValidUser) {
-      fetchUserMeals(userInput);
-    }
-  }, [isValidUser, userInput]);
+    fetchRandomMeals(); // Fetch random meals on load
+  }, []);
 
   useEffect(() => {
-    if (!user) {
-      fetchRandomMeals();
+    // Fetch user meals if user is logged in
+    if (user) {
+      fetchUserMeals(user.category);
     }
   }, [user]);
 
-  const fetchUserMeals = async (userName: string) => {
-    const foundUser = registeredUsers.find(
-      (user) => user.name.toLowerCase() === userName.toLowerCase()
-    );
-    if (foundUser) {
-      login(foundUser);
-      try {
-        const response = await fetch(
-          `https://www.themealdb.com/api/json/v1/1/filter.php?c=${foundUser.category}`
-        );
-        const data = await response.json();
-        if (data.meals) {
-          setUserMeals(data.meals.slice(0, 3)); // Store only the first 3 meals
-        }
-      } catch (error) {
-        console.error("Error fetching user meals:", error);
+  const fetchUserMeals = async (category: string) => {
+    console.log(`Fetching meals for category: ${category}`);
+    setIsLoading(true);
+    setFetchError(null);
+    try {
+      const response = await fetch(
+        `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`
+      );
+      const data = await response.json();
+      console.log("API Response:", data);
+      if (data.meals && data.meals.length > 0) {
+        setUserMeals(data.meals.slice(0, 3));
+      } else {
+        setUserMeals([]);
       }
+    } catch (error) {
+      console.error("Error fetching user meals:", error);
+      setFetchError("Failed to fetch meals. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -61,21 +66,22 @@ const Page = () => {
       const mealsData = await Promise.all(mealPromises);
       const meals = mealsData
         .map((mealData) => mealData.meals[0])
-        .filter((meal) => meal && meal.strMealThumb); // Ensures only meals with thumbnails are included
+        .filter((meal) => meal && meal.strMealThumb);
       setRandomMeals(meals);
     } catch (error) {
       console.error("Error fetching random meals:", error);
     }
   };
 
-  // Handle login attempt
   const handleLoginAttempt = () => {
     setHasTriedLogin(true);
     const foundUser = registeredUsers.find(
       (u) => u.name.toLowerCase() === userInput.toLowerCase()
     );
     if (foundUser) {
+      login(foundUser);
       setIsValidUser(true);
+      fetchUserMeals(foundUser.category); // Fetch user meals after login
     } else {
       setIsValidUser(false);
     }
@@ -105,29 +111,48 @@ const Page = () => {
         <div>
           <Menu />
           <p className="text-xl font-semibold mt-6">Hi {user.name}</p>
-          {userMeals.length > 0 ? (
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6">
-              {userMeals.map((meal) => (
-                <div
-                  key={meal.idMeal}
-                  className="bg-white rounded-lg shadow-lg p-4"
-                >
-                  <Image
-                    src={meal.strMealThumb}
-                    alt={meal.strMeal}
-                    width={500} // Set an appropriate width
-                    height={300} // Set an appropriate height
-                    className="w-full h-48 object-cover rounded-md"
-                    placeholder="blur" // Optional: show a blurred placeholder
-                    blurDataURL={meal.strMealThumb} // Optional: add a small, low-quality image as a placeholder
-                  />
 
-                  <h3 className="text-lg font-semibold mt-2">{meal.strMeal}</h3>
-                </div>
-              ))}
-            </div>
+          {isLoading ? (
+            <p className="mt-4">Loading meals...</p>
           ) : (
-            <p className="mt-4">No meals found for your category.</p>
+            <>
+              {fetchError ? (
+                <p className="text-red-500 mt-4">{fetchError}</p>
+              ) : (
+                <>
+                  {userMeals.length > 0 ? (
+                    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+                      {userMeals.map((meal) => (
+                        <Link
+                          key={meal.idMeal}
+                          href={`/recipe/${meal.idMeal}`}
+                          className="block"
+                        >
+                          <div className="bg-white rounded-lg shadow-lg p-4">
+                            <Image
+                              src={meal.strMealThumb}
+                              alt={meal.strMeal}
+                              width={500}
+                              height={300}
+                              className="w-full h-48 object-cover rounded-md"
+                              placeholder="blur"
+                              blurDataURL={meal.strMealThumb}
+                            />
+                            <h3 className="text-lg font-semibold text-gray-600 mt-2">
+                              {meal.strMeal}
+                            </h3>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-4">
+                      No meals found for the category "{user.category}".
+                    </p>
+                  )}
+                </>
+              )}
+            </>
           )}
         </div>
       )}

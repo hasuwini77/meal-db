@@ -48,7 +48,11 @@ const RecipePage = ({ params }: RecipePageProps) => {
   };
 
   const handleGoBack = () => {
-    window.location.href = "/";
+    if (user) {
+      window.history.back();
+    } else {
+      window.location.href = "/";
+    }
   };
 
   if (!meal) return <p>Loading...</p>;
