@@ -25,7 +25,7 @@ export const Login = ({ onLogin }: LoginProps) => {
         id="user-input"
         value={userInput}
         onChange={handleChange}
-        className="max-w-[200px] mx-auto"
+        className="max-w-[200px] mx-auto text-black p-1"
       />
       <button
         onClick={handleClick}

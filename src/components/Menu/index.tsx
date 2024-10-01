@@ -4,6 +4,11 @@ import Link from "next/link";
 export const Menu = () => {
   const { logout, favoriteCategory, setFavoriteCategory } = useUserContext();
 
+  const handleLogout = () => {
+    logout();
+    window.location.href = "/";
+  };
+
   return (
     <nav className="bg-gray-800 p-4 rounded shadow-md">
       <ul className="flex space-x-6">
@@ -30,7 +35,7 @@ export const Menu = () => {
         </li>
         <li>
           <button
-            onClick={logout}
+            onClick={handleLogout}
             className="text-white hover:text-gray-300 transition"
           >
             Logout
