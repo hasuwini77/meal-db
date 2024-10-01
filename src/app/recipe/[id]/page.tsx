@@ -92,12 +92,14 @@ const RecipePage = ({ params }: RecipePageProps) => {
         <p className="text-gray-600 text-sm leading-relaxed">
           {meal.strInstructions}
         </p>
-        <button
-          onClick={handleSaveRecipe}
-          className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 rounded-md shadow-md transition duration-200"
-        >
-          Save Recipe
-        </button>
+        {user && (
+          <button
+            onClick={handleSaveRecipe}
+            className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 rounded-md shadow-md transition duration-200"
+          >
+            Save Recipe
+          </button>
+        )}
       </div>
 
       {!user && (
