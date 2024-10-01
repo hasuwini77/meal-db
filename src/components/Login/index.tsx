@@ -1,4 +1,3 @@
-// Login.tsx
 "use client";
 import { useState } from "react";
 
@@ -14,8 +13,8 @@ export const Login = ({ onLogin }: LoginProps) => {
   };
 
   const handleClick = () => {
-    onLogin(userInput); // Call onLogin with userInput
-    setUserInput(""); // Reset input field
+    onLogin(userInput);
+    setUserInput("");
   };
 
   return (

@@ -5,8 +5,8 @@ import Image from "next/image";
 
 interface RandomMealsProps {
   meals: any[];
-  onRemove: (recipeId: string) => void; // Accept the onRemove function
-  isLoggedIn: boolean; // New prop to determine if the user is logged in
+  onRemove: (recipeId: string) => void;
+  isLoggedIn: boolean;
 }
 
 export const RandomMeals = ({
@@ -54,9 +54,9 @@ export const RandomMeals = ({
               </h3>
             </Link>
 
-            {isLoggedIn && ( // Conditionally render the button based on login status
+            {isLoggedIn && (
               <button
-                onClick={() => onRemove(meal.idMeal)} // Handle the remove action
+                onClick={() => onRemove(meal.idMeal)}
                 className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md transition duration-200"
               >
                 Remove from Favorites

@@ -6,7 +6,6 @@ import { FaUtensils } from "react-icons/fa";
 
 const Header = () => {
   React.useEffect(() => {
-    // GSAP animation example
     gsap.fromTo(
       ".header-icon",
       { y: -20, opacity: 0 },

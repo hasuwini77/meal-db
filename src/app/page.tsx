@@ -88,7 +88,6 @@ const Page = () => {
 
   const handleRemoveRecipe = async (recipeId: string) => {
     if (user) {
-      // Confirm the removal
       const result = await Swal.fire({
         title: "Are you sure?",
         text: "This recipe will be removed from your favorites.",
@@ -99,7 +98,6 @@ const Page = () => {
       });
 
       if (result.isConfirmed) {
-        // Update the user context
         const updatedSavedRecipes = user.savedRecipes.filter(
           (id) => id !== recipeId
         );
@@ -108,7 +106,6 @@ const Page = () => {
           savedRecipes: updatedSavedRecipes,
         });
 
-        // Show success alert
         await Swal.fire({
           title: "Removed!",
           text: "Recipe has been removed from favorites.",

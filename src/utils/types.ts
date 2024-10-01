@@ -11,8 +11,8 @@ export interface UserContextType {
   setUser: Dispatch<SetStateAction<UserType | null>>;
   login: (userData: UserType) => void;
   logout: () => void;
-  favoriteCategory: string | null; // Add this line
-  setFavoriteCategory: Dispatch<SetStateAction<string | null>>; // Add this line
+  favoriteCategory: string | null;
+  setFavoriteCategory: Dispatch<SetStateAction<string | null>>;
 }
   
   // Updated RecipeType

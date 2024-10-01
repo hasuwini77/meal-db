@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/utils/contexts";
-import { RecipeType, UserType } from "@/utils/types"; // Ensure UserType is imported
+import { RecipeType, UserType } from "@/utils/types";
 import Swal from "sweetalert2";
 import { Menu } from "@/components/Menu";
 
@@ -42,21 +42,17 @@ const RecipePage = ({ params }: RecipePageProps) => {
 
       if (recipeId) {
         if (!user.savedRecipes.includes(recipeId)) {
-          // Prevent duplicate saves
           setUser((prevUser) => {
-            // Ensure prevUser is not null
             if (prevUser) {
               return {
                 ...prevUser, // Spread previous user properties
-                savedRecipes: [...prevUser.savedRecipes, recipeId], // Add new recipe ID
-                // Keep favoriteCategory the same
-                favoriteCategory: prevUser.favoriteCategory, // Ensure favoriteCategory persists
+                savedRecipes: [...prevUser.savedRecipes, recipeId],
+                favoriteCategory: prevUser.favoriteCategory,
               };
             }
             return user; // In case prevUser is null, return the current user (this shouldn't happen)
           });
 
-          // Show success alert
           await Swal.fire({
             title: "Success!",
             text: "Recipe successfully saved!",
@@ -64,7 +60,6 @@ const RecipePage = ({ params }: RecipePageProps) => {
             confirmButtonText: "OK",
           });
         } else {
-          // Show error alert
           await Swal.fire({
             title: "Error!",
             text: "This recipe has already been saved.",
