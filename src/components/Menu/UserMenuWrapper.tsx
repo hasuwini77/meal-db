@@ -1,5 +1,3 @@
-// components/UserMenuWrapper.tsx
-
 "use client";
 
 import { useUserContext } from "@/utils/contexts";
@@ -8,9 +6,8 @@ import { usePathname } from "next/navigation"; // Import usePathname from next/n
 
 const UserMenuWrapper = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUserContext();
-  const pathname = usePathname(); // Get the current pathname
+  const pathname = usePathname();
 
-  // Check if the current pathname includes 'recipe' to apply different styles
   const isRecipePage = pathname.includes("/recipe/");
 
   return (

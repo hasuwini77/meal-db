@@ -1,18 +1,17 @@
 "use client";
 import { useUserContext } from "@/utils/contexts";
 import Link from "next/link";
-import { usePathname } from "next/navigation"; // Import usePathname to get the current path
+import { usePathname } from "next/navigation";
 
 export const Menu = () => {
   const { logout, favoriteCategory, setFavoriteCategory } = useUserContext();
-  const pathname = usePathname(); // Get the current pathname
+  const pathname = usePathname();
 
   const handleLogout = () => {
     logout();
     window.location.href = "/";
   };
 
-  // Check if the current pathname includes 'recipe'
   const isRecipePage = pathname.includes("/recipe/");
 
   return (
