@@ -2,7 +2,7 @@
 
 import { useUserContext } from "@/utils/contexts";
 import { Menu } from "@/components/Menu";
-import { usePathname } from "next/navigation"; // Import usePathname from next/navigation
+import { usePathname } from "next/navigation";
 
 const UserMenuWrapper = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUserContext();
@@ -12,7 +12,6 @@ const UserMenuWrapper = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="p-2">
-      {/* Only show Menu if the user is logged in */}
       {user && (
         <div
           className={`${

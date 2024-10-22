@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useUserContext } from "@/utils/contexts";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
-import { Menu } from "@/components/Menu";
+
 const Category = () => {
   const { favoriteCategory, setFavoriteCategory } = useUserContext();
   const [categories, setCategories] = useState<any[]>([]);
