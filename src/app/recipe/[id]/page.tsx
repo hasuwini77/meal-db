@@ -81,7 +81,6 @@ const RecipePage = ({ params }: RecipePageProps) => {
 
   return (
     <>
-      {user && <Menu />}
       <div className="max-w-sm mx-auto bg-white rounded-lg shadow-md mt-6 overflow-hidden p-6 space-y-4">
         <h1 className="text-2xl font-bold text-gray-800">{meal.strMeal}</h1>
         <img
