@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode; // Ensure children are correctly typed
 }>) {
   return (
     <html lang="en">
@@ -35,8 +35,7 @@ export default function RootLayout({
       >
         <Header />
         <UserProvider>
-          <UserMenuWrapper /> {/* Render UserMenuWrapper within UserProvider */}
-          {children} {/* Wrap children with UserProvider */}
+          <UserMenuWrapper>{children}</UserMenuWrapper>
         </UserProvider>
       </body>
     </html>
