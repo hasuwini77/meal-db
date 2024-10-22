@@ -1,3 +1,4 @@
+"use client";
 import { useUserContext } from "@/utils/contexts";
 import Link from "next/link";
 

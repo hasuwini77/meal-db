@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useUserContext } from "@/utils/contexts";
 import Link from "next/link";
 import Swal from "sweetalert2";
-import { Menu } from "@/components/Menu";
 import Image from "next/image";
 
 const Profile = () => {
@@ -110,7 +109,6 @@ const Profile = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <Menu />
       <h1 className="text-2xl font-bold">Profile Page</h1>
       <p>Name: {user.name}</p>
       <p>Favorite Category: {favoriteCategory ? favoriteCategory : "None"}</p>

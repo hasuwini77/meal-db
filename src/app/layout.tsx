@@ -1,8 +1,11 @@
+// app/layout.tsx
+
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/Header";
-import { UserProvider } from "@/utils/contexts";
+import { UserProvider } from "@/utils/contexts"; // UserProvider import
+import UserMenuWrapper from "@/components/Menu/UserMenuWrapper";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,7 +34,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Header />
-        <UserProvider>{children}</UserProvider>
+        <UserProvider>
+          <UserMenuWrapper /> {/* Render UserMenuWrapper within UserProvider */}
+          {children} {/* Wrap children with UserProvider */}
+        </UserProvider>
       </body>
     </html>
   );

@@ -1,14 +1,14 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/utils/contexts";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { Menu } from "@/components/Menu";
-
 const Category = () => {
   const { favoriteCategory, setFavoriteCategory } = useUserContext();
-  const [categories, setCategories] = useState<string[]>([]);
-  const [meals, setMeals] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -17,10 +17,7 @@ const Category = () => {
           "https://www.themealdb.com/api/json/v1/1/categories.php"
         );
         const data = await response.json();
-        const categoryNames = data.categories.map(
-          (cat: any) => cat.strCategory
-        );
-        setCategories(categoryNames);
+        setCategories(data.categories);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -29,24 +26,9 @@ const Category = () => {
     fetchCategories();
   }, []);
 
-  // Fetch meals from the favorite category when it's set
-  useEffect(() => {
-    if (favoriteCategory) {
-      const fetchMeals = async () => {
-        try {
-          const response = await fetch(
-            `https://www.themealdb.com/api/json/v1/1/filter.php?c=${favoriteCategory}`
-          );
-          const data = await response.json();
-          setMeals(data.meals.slice(0, 6)); // Show 6 items
-        } catch (error) {
-          console.error("Error fetching meals:", error);
-        }
-      };
-
-      fetchMeals();
-    }
-  }, [favoriteCategory]);
+  const handleViewMeals = (category: string) => {
+    router.push(`/category/${category}`);
+  };
 
   const handleSetFavorite = (category: string) => {
     setFavoriteCategory(category);
@@ -60,44 +42,38 @@ const Category = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <Menu />
       <h1 className="text-2xl font-bold mb-4">Categories</h1>
-
-      {/* Category buttons */}
-      <div className="flex flex-wrap mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {categories.map((category) => (
-          <button
-            key={category}
-            onClick={() => handleSetFavorite(category)}
-            className={`p-2 m-1 border rounded ${
-              favoriteCategory === category
-                ? "bg-blue-500 text-white"
-                : "bg-white text-black"
-            }`}
+          <div
+            key={category.strCategory}
+            className="border rounded-lg shadow-md"
           >
-            {category}
-          </button>
+            <img
+              src={category.strCategoryThumb}
+              alt={category.strCategory}
+              className="w-full h-40 object-cover rounded-t-lg"
+            />
+            <div className="p-4">
+              <h2 className="text-lg font-bold">{category.strCategory}</h2>
+              <button
+                onClick={() => handleViewMeals(category.strCategory)}
+                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                View Meals
+              </button>
+              <button
+                onClick={() => handleSetFavorite(category.strCategory)}
+                className="mt-2 ml-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                ❤️ Set as Favorite
+              </button>
+            </div>
+          </div>
         ))}
       </div>
-
-      {/* Meals from favorite category */}
-      {favoriteCategory ? (
-        <>
-          <h2 className="text-xl font-semibold mb-4">
-            You Favorite Category is Currently: {favoriteCategory}
-          </h2>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {meals.map((meal) => (
-              <Link href={`/recipe/${meal.idMeal}`} key={meal.idMeal}>
-                <li className="bg-white text-gray-800 rounded-lg shadow-md p-4">
-                  {meal.strMeal}
-                </li>
-              </Link>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <p>Please select a category to see the meals.</p>
+      {favoriteCategory && (
+        <p>Your Favorite Category is Currently: {favoriteCategory}</p>
       )}
     </div>
   );

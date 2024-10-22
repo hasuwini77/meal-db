@@ -1,9 +1,10 @@
+// app/page.tsx
+
 "use client";
 
 import { useState, useEffect } from "react";
 import { useUserContext } from "@/utils/contexts";
 import { LoginWrapper } from "@/components/LoginWrapper";
-import { Menu } from "@/components/Menu";
 import { RandomMeals } from "@/components/RandomMeals";
 import { registeredUsers } from "@/utils/users";
 import Image from "next/image";
@@ -122,7 +123,7 @@ const Page = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
+    <div>
       {!user ? (
         <div className="text-center">
           <p className="text-lg mb-4">
@@ -147,7 +148,6 @@ const Page = () => {
         </div>
       ) : (
         <div>
-          <Menu />
           <p className="text-xl font-semibold mt-6">Hi {user.name}</p>
 
           {isLoading ? (
